@@ -7,11 +7,6 @@ Resources:
     Properties:
       Handler: MessageUtil
       Runtime: java8
-      CodeUri: ./target
-      Events:
-        MeggageUtilApi:
-          Type: Api
-          Properties:
-            Path: /MeggageUtilResource
-            Method: GET
-            Role: 'arn:aws:iam::812618411163:role/cloudformation-lambda-execution-role'
+      CodeUri: target
+      Role: 'arn:aws:iam::812618411163:role/cloudformation-lambda-execution-role'
+            
