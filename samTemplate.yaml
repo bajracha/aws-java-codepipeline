@@ -2,16 +2,16 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: Outputs the time
 Resources:
-  MeggageUtil:
+  MessageUtil:
     Type: AWS::Serverless::Function
     Properties:
       Handler: MessageUtil
       Runtime: java8
       CodeUri: target
       Events:
-        MeggageUtilApi:
+        MessageUtilApi:
           Type: Api
           Properties:
-            Path: /MeggageUtilResource
+            Path: /MessageUtilResource
             Method: GET
             
