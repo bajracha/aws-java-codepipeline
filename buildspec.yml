@@ -3,7 +3,7 @@ version: 0.2
 phases:
   install:
     commands:
-      - echo Nothing to do in the install phase...
+      - aws cloudformation package --template-file samTemplate.yaml --s3-bucket cloudbuild-us-east-1-output-build --output-template-file NewSamTemplate.yaml
   pre_build:
     commands:
       - echo Nothing to do in the pre_build phase...
@@ -17,4 +17,4 @@ phases:
 artifacts:
   files:
     - target/messageUtil-1.0.jar
-    - samTemplate.yaml
+    - NewSamTemplate.yaml
