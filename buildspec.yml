@@ -3,7 +3,7 @@ version: 0.2
 phases:
   install:
     commands:
-      - aws cloudformation package --template-file samTemplate.yaml --s3-bucket cloudbuild-us-east-1-output-build --output-template-file NewSamTemplate.yaml
+      - echo Nothing to do in the pre_build phase...
   pre_build:
     commands:
       - echo Nothing to do in the pre_build phase...
@@ -11,6 +11,7 @@ phases:
     commands:
       - echo Build started on `date`
       - mvn install
+      - aws cloudformation package --template-file samTemplate.yaml --s3-bucket cloudbuild-us-east-1-output-build --output-template-file NewSamTemplate.yaml
   post_build:
     commands:
       - echo Build completed on `date`
