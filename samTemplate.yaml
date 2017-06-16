@@ -5,7 +5,7 @@ Resources:
   MeggageUtil:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: index.handler
+      Handler: MessageUtil
       Runtime: java8
       CodeUri: ./target
       Events:
