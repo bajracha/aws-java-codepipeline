@@ -16,6 +16,7 @@ phases:
     commands:
       - echo Build completed on `date`
 artifacts:
+  type: zip
   files:
     - target/messageUtil-1.0.jar
     - NewSamTemplate.yaml

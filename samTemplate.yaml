@@ -14,3 +14,4 @@ Resources:
           Properties:
             Path: /MeggageUtilResource
             Method: GET
+            Role: 'arn:aws:iam::812618411163:role/cloudformation-lambda-execution-role'
