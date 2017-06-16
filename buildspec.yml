@@ -11,12 +11,15 @@ phases:
     commands:
       - echo Build started on `date`
       - mvn install
-      - aws cloudformation package --template-file samTemplate.yaml --s3-bucket cloudbuild-us-east-1-output-build --output-template-file NewSamTemplate.yaml
   post_build:
     commands:
       - echo Build completed on `date`
+      - mkdir deploy
+      - cp target/messageUtil-1.0.jar deploy/
+      - aws cloudformation package --template-file samTemplate.yaml --s3-bucket cloudbuild-us-east-1-output-build --output-template-file NewSamTemplate.yaml
 artifacts:
   type: zip
   files:
-    - target/messageUtil-1.0.jar
+    - deploy/messageUtil-1.0.jar
     - NewSamTemplate.yaml
+    - temp
