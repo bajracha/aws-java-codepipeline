@@ -27,7 +27,7 @@ Resources:
          - AttributeName: TENANTID_PERSONID
            AttributeType: B
          - AttributeName: TOPIC
-           AttributeType: B
+           AttributeType: S
        KeySchema:
          - AttributeName: TENANTID_PERSONID
            KeyType: HASH
