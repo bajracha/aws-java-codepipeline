@@ -16,10 +16,10 @@ phases:
       - echo Build completed on `date`
       - mkdir deploy
       - mkdir deploy/lib
-      - cp target/messageUtil-1.0.jar deploy/lib
+      - cp target/userfilterlambda-4.0.0.jar deploy/lib
       - aws cloudformation package --template-file samTemplate.yaml --s3-bucket cloudbuild-us-east-1-output-build --output-template-file NewSamTemplate.yaml
 artifacts:
   type: zip
   files:
-    - deploy/lib/messageUtil-1.0.jar
+    - deploy/lib/userfilterlambda-4.0.0.jar
     - NewSamTemplate.yaml
