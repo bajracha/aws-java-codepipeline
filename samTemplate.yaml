@@ -17,7 +17,7 @@ Resources:
         CheckWebsiteScheduledEvent:
           Type: Schedule
           Properties:
-            Schedule: rate(5 minute)          
+            Schedule: rate(5 minutes)          
   Table:
     Type: AWS::DynamoDB::Table
     Properties:
