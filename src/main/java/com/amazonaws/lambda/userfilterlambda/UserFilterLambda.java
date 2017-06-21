@@ -16,10 +16,14 @@ import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
+import com.amazonaws.services.sns.AmazonSNS;
+import com.amazonaws.services.sns.AmazonSNSClientBuilder;
+import com.amazonaws.services.sns.model.PublishRequest;
+import com.google.gson.Gson;
 
 /**
- * Description.
- * @author Your Name
+ * User Filter Lambda Function
+ * @author Dongjian Cai (DC044031)
  */
 @SuppressWarnings("nls")
 public class UserFilterLambda implements RequestHandler<PushToken, String> {
@@ -39,31 +43,22 @@ public class UserFilterLambda implements RequestHandler<PushToken, String> {
         final DynamoDB dynamoDB = new DynamoDB(client);
         final Table table = dynamoDB.getTable(TABLE_NAME);
 
+        final AmazonSNS snsClient = AmazonSNSClientBuilder.standard().withRegion(REGION).build();
+
         try {
-            // TODO: getKey method will be replaced by a new service or lambda function
+            // TODO: getKey method will be replaced by a new lambda function
             final String partitionKey = getKey(token);
-            // final byte[] partitionKey = "L3Byb2QvMTIzNA==".getBytes("UTF-8");
 
-            // final byte[] binaryKey = partitionKey.getBytes("UTF-8");
-            // final ByteBuffer buffer = ByteBuffer.allocate(binaryKey.length);
-            // buffer.put(binaryKey, 0, binaryKey.length);
-            // buffer.position(0);
-
+            // set up the query spec
             final HashMap<String, String> nameMap = new HashMap<String, String>();
             nameMap.put("#partitionKey", COL_PARTITION_KEY);
             nameMap.put("#sortKey", COL_SORT_KEY);
 
-            // final HashMap<String, Object> valueMap = new HashMap<String, Object>();
-            // valueMap.put(":keyId", partitionKey.getBytes("UTF-8"));
-            // context.getLogger().log("partitionKey converts to string: " + partitionKey.toString());
-            // valueMap.put(":topic", token.getTopic());
-            // context.getLogger().log("topic: " + token.getTopic());
-
             final ValueMap valueMap = new ValueMap();
             valueMap.withBinary(":keyId", partitionKey.getBytes("UTF-8"));
             valueMap.with(":topic", token.getTopic());
-            context.getLogger().log("partitionKey converts to string: " + partitionKey.toString());
-            context.getLogger().log("topic: " + token.getTopic());
+            context.getLogger().log("INFO: partitionKey in string: " + partitionKey);
+            context.getLogger().log("INFO: sortKey: " + token.getTopic());
 
             final QuerySpec querySpec = new QuerySpec()
                     .withKeyConditionExpression("#partitionKey = :keyId and #sortKey = :topic").withNameMap(nameMap)
@@ -74,52 +69,57 @@ public class UserFilterLambda implements RequestHandler<PushToken, String> {
             Item item = null;
             final StringBuilder result = new StringBuilder();
 
-            context.getLogger().log("Searching subscriptions for " + partitionKey);
+            // query dynamoDB
             items = table.query(querySpec);
 
             iterator = items.iterator();
-            context.getLogger().log("has next: " + iterator.hasNext());
             while (iterator.hasNext()) {
                 item = iterator.next();
-                result.append("return item: " + new String(item.getBinary(COL_PARTITION_KEY)) + " : "
-                        + item.getString(COL_SORT_KEY) + " : " + item.getString("INFO"));
-                context.getLogger().log(result.toString());
-                // TODO: get topic arn and send a message with token info
+
+                if (item.getString("TOPIC_ARN") != null) {
+                    result.append("tenantId_personId: " + new String(item.getBinary(COL_PARTITION_KEY)) + ", topic: "
+                            + item.getString(COL_SORT_KEY) + ", message: " + item.getString("TOPIC_ARN"));
+                    context.getLogger().log(result.toString());
+
+                    // publish to topics with pushToken
+                    sendToSNS(token, item, snsClient);
+                }
+
             }
             return result.toString();
 
         } catch (final Exception e) {
-            context.getLogger().log("Unable to query");
-            context.getLogger().log(e.getMessage());
-        }
+            // final JSONObject responseJson = new JSONObject();
+            // final JSONObject headerJson = new JSONObject();
+            // headerJson.put("x-custom-response-header", "my custom response header value");
+            //
+            // final JSONObject responseBody = new JSONObject();
+            // responseBody.put("error", e.toString());
+            //
+            // responseJson.put("statusCode", "400");
+            // responseJson.put("headers", headerJson);
+            // responseJson.put("body", responseBody.toString());
+            // return responseJson.toString();
 
-        return "Error";
+            context.getLogger().log("Errors during user filtering process");
+            context.getLogger().log(e.getMessage());
+            throw new UserFilterException("Errors during user filtering process", e);
+        }
     }
 
-    /*
-     * TODO: This private method will be replaced by a new service or lambda function to generate key for query
-     */
-    // private byte[] getKey(final PushToken token) throws UnsupportedEncodingException {
-    // // individual account
-    // // return new StringBuilder().append("prod/").append(token.getTenantKey()).append("/").append(token.getUserId())
-    // // .toString();
-    //
-    // // cerner cloud
-    // final String sKey = new StringBuilder().append("/prod/").append(token.getUserId()).toString();
-    // final byte[] encodedKey = Base64.encode(sKey.getBytes("UTF-8"));
-    // return encodedKey;
-    // }
-
     private String getKey(final PushToken token) throws UnsupportedEncodingException {
-        // individual account
-        // return new StringBuilder().append("prod/").append(token.getTenantKey()).append("/").append(token.getUserId())
-        // .toString();
-
-        // cerner cloud
+        // format the key based on the pattern defined in dynamoDB
+        // final String sKey = "/prod/1234";
         final String sKey = new StringBuilder().append("/").append(token.getTenantKey()).append("/")
                 .append(token.getUserId()).toString();
-        // final String sKey = "/prod/1234";
+
         return sKey;
     }
 
+    private void sendToSNS(final PushToken token, final Item item, final AmazonSNS snsClient) {
+        final String topicArn = item.getString("TOPIC_ARN");
+
+        final PublishRequest publishRequest = new PublishRequest(topicArn, new Gson().toJson(token));
+        snsClient.publish(publishRequest);
+    }
 }

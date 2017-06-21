@@ -1,0 +1,5 @@
+{
+    "TENANT_PERSON_ID": {"B": "/prod/1234"},
+    "TOPIC": {"S": "cosign"},
+    "INFO": {"S": "item from command line with key: /prod/1234"}
+}
