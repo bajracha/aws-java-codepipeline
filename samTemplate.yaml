@@ -18,7 +18,7 @@ Resources:
         CheckWebsiteScheduledEvent:
           Type: Schedule
           Properties:
-            Schedule: cron(0/5 * * * * *)         
+            Schedule: rate(5 minutes)        
   Table:
     Type: AWS::DynamoDB::Table
     Properties: 
