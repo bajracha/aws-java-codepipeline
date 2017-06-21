@@ -8,6 +8,7 @@ Resources:
       Handler: com.amazonaws.lambda.userfilterlambda.stream.UserFilterStreamLambda
       Runtime: java8
       CodeUri: deploy
+      Policies: AmazonDynamoDBReadOnlyAccess
       Events:
         MessageUtilApi:
           Type: Api
