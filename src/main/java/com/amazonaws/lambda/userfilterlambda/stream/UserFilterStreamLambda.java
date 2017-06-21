@@ -64,10 +64,10 @@ public class UserFilterStreamLambda implements RequestStreamHandler {
             // validate(requestBodyJson);
             final PushToken token = new Gson().fromJson(requestBodyJson, PushToken.class);
 
-            // final String result = executeFilter(token, context, table);
+            final String result = executeFilter(token, context, table);
 
             final JSONObject responseBody = new JSONObject();
-            responseBody.put("input", event.toString());
+            responseBody.put("input", result.toString());
             responseBody.put("message", "Success!");
 
             final JSONObject headerJson = new JSONObject();
