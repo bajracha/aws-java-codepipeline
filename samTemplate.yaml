@@ -21,8 +21,8 @@ Resources:
             Schedule: cron(0/5 * * * * *)         
   Table:
     Type: AWS::DynamoDB::Table
-    Properties:
-       TableName: PUB_SUB
+    Properties: 
+       TableName: PUB_SUB_NEW
        AttributeDefinitions:
          - AttributeName: TENANTID_PERSONID
            AttributeType: B

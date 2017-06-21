@@ -33,7 +33,7 @@ import com.amazonaws.services.sns.model.PublishRequest;
 import com.google.gson.Gson;
 
 public class UserFilterStreamLambda implements RequestStreamHandler {
-    private final String TABLE_NAME = "PUB_SUB";
+    private final String TABLE_NAME = "PUB_SUB_NEW";
     private final String COL_PARTITION_KEY = "TENANTID_PERSONID";// "TENANT_PERSONID_BYTE";
     private final String COL_SORT_KEY = "TOPIC";
     private final Regions REGION = Regions.US_EAST_1;
