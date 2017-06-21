@@ -14,4 +14,39 @@ Resources:
           Properties:
             Path: /MessageUtilResource
             Method: GET
-            
+        CheckWebsiteScheduledEvent:
+          Type: Schedule
+          Properties:
+            Schedule: rate(5 minute)
+  DynamoDBTable:
+     Type: AWS::DynamoDB::Table
+     Properties:
+       AttributeDefinitions:
+         - AttributeName: TENANTID_PERSONID
+           AttributeType: B
+         - AttributeName: TOPIC
+           AttributeType: B
+       KeySchema:
+         - AttributeName: TENANTID_PERSONID
+           KeyType: HASH
+         - AttributeName: TOPIC
+           KeyType: RANGE
+       ProvisionedThroughput:
+         ReadCapacityUnits: 5
+         WriteCapacityUnits: 5
+       TableName: PUB_SUB
+       GlobalSecondaryIndexes:
+        -
+          IndexName: myGSI
+          KeySchema:
+            -
+              AttributeName: TOPIC
+              KeyType: HASH
+            -
+              AttributeName: TENANTID_PERSONID
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+          ProvisionedThroughput:
+            ReadCapacityUnits: 1
+            WriteCapacityUnits: 1
