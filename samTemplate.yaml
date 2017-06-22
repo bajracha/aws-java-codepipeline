@@ -2,6 +2,10 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: User Filter 
 Resources:
+  CountSubscription:
+    Type: 'AWS::SNS::Topic'
+    Properties:
+      TopicName: CountSubscription
   UserFilter:
     Type: AWS::Serverless::Function
     Properties:
@@ -11,6 +15,10 @@ Resources:
       MemorySize: 512
       Timeout: 60
       Policies: AmazonDynamoDBReadOnlyAccess
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref Table
+          REGION: !Ref "AWS::Region"
       Events:
         MessageUtilApi:
           Type: Api
