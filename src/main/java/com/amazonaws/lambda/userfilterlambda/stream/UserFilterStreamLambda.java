@@ -82,9 +82,7 @@ public class UserFilterStreamLambda implements RequestStreamHandler {
            * headerJson.put("x-custom-response-header", "my custom response header value"); final JSONObject
            * responseBody = new JSONObject(); responseBody.put("error", pex.toString()); responseJson.put("statusCode",
            * "400"); responseJson.put("headers", headerJson); responseJson.put("body", responseBody.toString()); }
-           */catch (
-
-        final Exception ex) {
+           */catch (final Exception ex) {
             final JSONObject headerJson = new JSONObject();
             headerJson.put("x-custom-response-header", "my custom response header value");
 
