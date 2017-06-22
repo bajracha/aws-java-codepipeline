@@ -146,7 +146,7 @@ public class UserFilterStreamLambda implements RequestStreamHandler {
                 context.getLogger().log(result.toString());
 
                 // publish to topics with pushToken
-                sendToSNS(token, item);
+                //sendToSNS(token, item);
             }
 
         }
