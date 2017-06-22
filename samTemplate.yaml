@@ -8,6 +8,8 @@ Resources:
       Handler: com.amazonaws.lambda.userfilterlambda.stream.UserFilterStreamLambda
       Runtime: java8
       CodeUri: deploy
+      MemorySize: 512
+      Timeout: 60
       Policies: AmazonDynamoDBReadOnlyAccess
       Events:
         MessageUtilApi:
