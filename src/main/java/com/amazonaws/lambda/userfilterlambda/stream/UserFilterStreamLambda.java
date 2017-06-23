@@ -36,7 +36,7 @@ public class UserFilterStreamLambda implements RequestStreamHandler {
     private final String TABLE_NAME = System.getenv("PNC_TABLE_NAME");
     private final String COL_PARTITION_KEY = "TENANTID_PERSONID";// "TENANT_PERSONID_BYTE";
     private final String COL_SORT_KEY = "TOPIC";
-    private final Regions REGION = System.getenv("REGION");
+    private final Regions REGION = Regions.fromName(System.getenv("REGION"));
 
     JSONParser parser = new JSONParser();
 
