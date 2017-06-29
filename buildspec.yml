@@ -18,7 +18,7 @@ phases:
       - mkdir deploy
       - mkdir deploy/lib
       - cp target/userfilterlambda-4.0.0.jar deploy/lib
-      - aws cloudformation package --template-file samTemplate.yaml --s3-bucket cloudbuild-us-east-1-output-build --output-template-file NewSamTemplate.yaml
+      - aws cloudformation package --template-file samTemplate.yaml --s3-bucket message-center-codebuild-bucket --output-template-file NewSamTemplate.yaml
 artifacts:
   type: zip
   files:
