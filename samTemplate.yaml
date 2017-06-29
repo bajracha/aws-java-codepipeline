@@ -12,12 +12,13 @@ Resources:
       Handler: com.amazonaws.lambda.userfilterlambda.stream.UserFilterStreamLambda
       Runtime: java8
       CodeUri: deploy
+      Role: arn:aws:iam::812618411163:role/service-role/execute_my_lambda
       MemorySize: 512
       Timeout: 60
       Policies: AmazonDynamoDBReadOnlyAccess
       Environment:
         Variables:
-          TABLE_NAME: !Ref Table
+          PNC_TABLE_NAME: !Ref Table
           REGION: !Ref "AWS::Region"
       Events:
         MessageUtilApi:
